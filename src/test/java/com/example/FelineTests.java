@@ -2,48 +2,50 @@ package com.example;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FelineTests {
 
-    @Spy
+    @Mock
+    private Animal animal;
+
+    @InjectMocks
     private Feline feline;
 
     @Test
-    public void eatMeatTest() throws Exception {
-        feline.eatMeat();
-        Mockito.verify(feline, Mockito.times(1)).getFood("Хищник");
+    public void eatMeatShouldReturnPredatorFood() throws Exception {
+
+        List<String> expectedFood = List.of("Животные", "Птицы", "Рыба");
+        when(animal.getFood("Хищник")).thenReturn(expectedFood);
+
+        List<String> actualFood = feline.eatMeat();
+
+
+        assertEquals("Метод должен возвращать пищу для хищников",
+                expectedFood, actualFood);
+        verify(animal).getFood("Хищник");
     }
 
     @Test
-    public void getFamilyTest() {
-        String expectedFelineFamilyName = "Кошачьи";
-        assertThat("Некорректное название семейства кошачьих",
-                feline.getFamily(),
-                equalTo(expectedFelineFamilyName)
-        );
+    public void getFamilyShouldReturnFelidae() {
+        assertEquals("Кошачьи", feline.getFamily());
     }
 
     @Test
-    public void getKittensDefaultIsCorrectTest() {
-        int expectedCount = 1;
-        assertThat("Некорректное количество котят",
-                feline.getKittens(),
-                equalTo(expectedCount)
-        );
+    public void getKittensDefaultShouldReturnOne() {
+        assertEquals(1, feline.getKittens());
     }
 
     @Test
-    public void getKittensInputCountIsCorrectTest() {
+    public void getKittensWithParameterShouldReturnSameValue() {
         int expectedCount = 5;
-        assertThat("Некорректное количество котят",
-                feline.getKittens(expectedCount),
-                equalTo(expectedCount)
-        );
+        assertEquals(expectedCount, feline.getKittens(expectedCount));
     }
 }

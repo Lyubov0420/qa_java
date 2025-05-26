@@ -9,7 +9,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.hamcrest.MatcherAssert.assertThat;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class LionTests {
@@ -36,12 +36,22 @@ public class LionTests {
     }
 
     @Test
-    public void getFoodTest() throws Exception {
+    public void getFoodShouldReturnCorrectFoodList() throws Exception {
         Lion lion = new Lion(MALE, feline);
         List<String> expectedFood = List.of("Животные", "Птицы", "Рыба");
-        Mockito.when(feline.getFood(Mockito.eq("Хищник"))).thenReturn(expectedFood);
+        Mockito.when(feline.getFood("Хищник")).thenReturn(expectedFood);
+
         List<String> actual = lion.getFood();
+
         assertEquals(expectedFood, actual);
+    }
+
+    @Test
+    public void getFoodShouldCallFelineGetFoodWithPredatorArgument() throws Exception {
+        Lion lion = new Lion(MALE, feline);
+        Mockito.when(feline.getFood("Хищник")).thenReturn(List.of());
+        lion.getFood();
+
         Mockito.verify(feline, Mockito.times(1)).getFood("Хищник");
     }
 }
